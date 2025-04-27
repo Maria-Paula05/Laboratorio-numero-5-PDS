@@ -26,8 +26,32 @@ d.Frecuencias de interés en este análisis:
 
 
 e.Transformada Wavelet:
--Definición:
 
--Usos de transformada Wavelet:
 
--Tipos de wavelet utilizadas en señales biológicas.
+-Definición:La transformada wavelet es una herramienta matemática que descompone una señal en componentes de diferentes frecuencias y escalas, permitiendo analizar señales no estacionarias con alta resolución temporal y frecuencial.
+
+-Usos de transformada Wavelet:Se utiliza en el procesamiento de señales biológicas para:​
+
+Eliminar ruido y artefactos.​
+
+Detectar eventos transitorios en señales como el electrocardiograma.​
+
+Analizar la variabilidad de la frecuencia cardíaca y otras señales fisiológicas .​
+
+- Tipos de wavelet utilizadas en señales biológicas
+  
+Algunas wavelets comúnmente empleadas en el análisis de señales biológicas incluyen:​
+
+Daubechies: Adecuadas para detectar cambios abruptos en señales.​
+
+Coiflets: Ofrecen una buena resolución en tiempo y frecuencia.​
+
+Symlets: Similares a las Daubechies pero con mayor simetría, útiles en la reconstrucción de señales .​
+
+-Diagrama de flujo 
+![image](https://github.com/user-attachments/assets/fce332eb-a546-4d40-b88d-96d4cea3838e)
+
+
+
+
+# Referencias
