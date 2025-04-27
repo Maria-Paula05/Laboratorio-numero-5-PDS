@@ -49,9 +49,25 @@ Coiflets: Ofrecen una buena resolución en tiempo y frecuencia.​
 Symlets: Similares a las Daubechies pero con mayor simetría, útiles en la reconstrucción de señales .​
 
 -Diagrama de flujo 
+
+
 ![image](https://github.com/user-attachments/assets/fce332eb-a546-4d40-b88d-96d4cea3838e)
 
 
 
 
 # Referencias
+
+
+References
+Análisis de wavelets. (n.d.). StudySmarter ES. Retrieved April 26, 2025, from https://www.studysmarter.es/resumenes/matematicas/matematicas-aplicadas/analisis-de-wavelets/
+
+Coon, E. (2023, July 3). Introducción al sistema nervioso autónomo. Manuale Merck versión para el público general; Manuales de Merck. https://www.merckmanuals.com/es-us/hogar/enfermedades-cerebrales-medulares-y-nerviosas/trastornos-del-sistema-nervioso-autónomo/introducción-al-sistema-nervioso-autónomo
+
+Guzmán, M., & Navarro, P. B. (2024, December 10). Introducción al sistema nervioso periférico.
+
+Mezoo Co., Ltd. (n.d.). Me-zoo.com. Retrieved April 26, 2025, from https://m.me-zoo.com/main/html.php?htmid=sp%2Fscience%2Fscience6.html
+
+Quiroz-González, S., López-Espinosa, E., Liu, Z., & Fossion, R. (2024). Evidencias de los efectos parasimpáticos y simpáticos de la acupuntura mediante la variabilidad de la frecuencia cardíaca: implicaciones multisistémicas. Revista internacional de acupuntura, 18(1), 100288. https://doi.org/10.1016/j.acu.2024.100288
+
+Serrano, D. C., & Torres, A. (2024, December 10). Introducción al sistema nervioso periférico.
