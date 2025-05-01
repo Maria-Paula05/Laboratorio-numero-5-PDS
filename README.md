@@ -49,6 +49,58 @@ Entre los tipos de wavelets más utilizados en el análisis de señales biológi
 
 ![image](https://github.com/user-attachments/assets/fce332eb-a546-4d40-b88d-96d4cea3838e)
 
+# 2.Adquisición de la señal EMG:
+
+Para lograr tomar la señal de una manera correcta y con una frecuencia de muestreo considerable se usó el sistema de adquisición DAQ el cual fue conectado al sensor mediante conexiones simples y también al computador; el código configurado para adquirir correctamente la señal fue creado en MatLab al cual para que  funcionará se instaló una librería propia de DAQ y el código utilizado es el  siguiente:
+
+```python
+rado
+grid on;
+
+% ======= INICIO DE ADQUISICIÓN =======
+disp('Iniciando adquisición ECG...');
+startTime = datetime('now');
+
+for i = 1:numReads
+    data = read(d, samplesPerRead, "OutputFormat", "Matrix");
+    
+    % Tiempo relativo de cada muestra
+    t0 = seconds(datetime('now') - startTime);
+    t = t0 + (0:samplesPerRead-1)' / sampleRate;
+    
+    % Acumular datos
+    timeVec = [timeVec; t];
+    signalVec = [signalVec; data];
+
+    % Actualizar gráfica
+    set(h, 'XData', timeVec, 'YData', signalVec);
+    drawnow;
+end
+
+% ======= GUARDAR LOS DATOS =======
+disp('Adquisición finalizada. Guardando archivo...');
+T = table(timeVec, signalVec, 'VariableNames', {'Tiempo_s', 'Voltaje_V'});
+writetable(T, outputFile);
+disp(['ECG guardado en: ', outputFile]);
+
+% ======= LIBERAR DAQ =======
+clear d;
+```
+
+En este código puede observarse una frecuencia de muestreo de 1Khz lo que indica que deben tomarse 1000 datos por segundo; y el tiempo que se tomó la señal fue de 300 segundos tiempo equivalente a 5 minutos; junto con este pequeño análisis se puede vdecir que se deber►1an tomar 30.000 datos de esta señal lo que fue confirmado conla revisión del archivo .csv que el MatLab creó.
+
+
+
+# 3.Pre-procesamiento de la señal:
+
+
+
+# 4.Análisis de la HRV en el dominio del tiempo:
+
+
+
+# 5.Aplicación de la Transformada Wavelet:
+
 
 
 
