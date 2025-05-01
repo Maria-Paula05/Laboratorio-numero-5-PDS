@@ -215,7 +215,7 @@ print(f"Frecuencia de muestreo estimada (tercer minuto): {fs_mean:.2f} Hz")
 
 d. Identificación de picos R 
 ```python
-min_dist = int(0.34 * fs)
+min_dist = int(0.3 * fs)
 prominence = 0.3
 
 peaks, _ = find_peaks(filtered_ecg, distance=min_dist, prominence=prominence)
@@ -244,7 +244,7 @@ Frecuencia cardíaca total estimada: 56.00 latidos por minuto
 -Señal de tercer minuto
 ```python
 # Detección de picos R con parámetros de distancia y prominencia ajustados
-min_dist = int(0.25 * fs_mean)  # Distancia mínima entre picos (0.2 segundos * frecuencia de muestreo)
+min_dist = int(0.3 * fs_mean)  # Distancia mínima entre picos (0.2 segundos * frecuencia de muestreo)
 prominence = 0.1  # Prominencia mínima de los picos (más baja)
 
 # Detectar los picos R
@@ -420,11 +420,11 @@ plt.show()
 ````
 ![image](https://github.com/user-attachments/assets/2c9bbf08-542a-4286-a5a8-58714fdea13c)
 
-¿Qué diferencias se observan entre los análisis en el dominio del tiempo y el 
-dominio tiempo-frecuencia?
-- ¿Qué efecto tiene el uso de diferentes funciones wavelet en los resultados del 
-análisis?
-- ¿Qué aplicaciones reales tiene esta práctica?
+# Análisis
+En este análisis se aplicó un filtro pasa banda IIR de tipo Butterworth de cuarto orden, con frecuencias de corte de 0.5 Hz y 40 Hz, sobre una señal ECG muestreada a 1000 Hz. El objetivo fue eliminar componentes no deseadas, como el ruido de muy baja frecuencia (por movimientos o artefactos respiratorios) y el ruido de alta frecuencia (como interferencia eléctrica o actividad muscular). En la señal original se observa un nivel de voltaje elevado con muchas variaciones pequeñas y rápidas, indicativas de ruido. Tras el filtrado, la señal se centra alrededor de cero voltios, y se reduce considerablemente el ruido, destacando más claramente los complejos QRS. Esta mejora en la claridad de la señal permite una detección más precisa de los picos R, fundamentales para el análisis de la frecuencia cardíaca y la variabilidad (HRV). En resumen, el filtrado fue exitoso, limpiando la señal y conservando sus características fisiológicas esenciales, lo cual es crucial para garantizar un análisis clínico y matemático fiable.
+
+En esta etapa del análisis se realizó la detección de los picos R de la señal ECG previamente filtrada, lo cual es esencial para calcular la frecuencia cardíaca y posteriormente analizar la variabilidad de la misma (HRV). Se utilizó la función find_peaks con dos parámetros clave: una distancia mínima entre picos (min_dist) de 0.3 segundos, que equivale al intervalo mínimo fisiológicamente esperable entre dos latidos (considerando una frecuencia cardíaca máxima de ~176 lpm), y una prominencia mínima de 0.3 V, con el fin de asegurar que los picos detectados correspondan a verdaderos complejos QRS y no a ruido o fluctuaciones menores. En el gráfico, los picos R se muestran resaltados en rojo sobre la señal ECG filtrada, evidenciando una detección clara y consistente a lo largo del minuto analizado. El resultado fue la identificación de un número de latidos que permitió estimar la frecuencia cardíaca total en latidos por minuto (bpm), reflejando la eficacia del preprocesamiento y del umbral seleccionado para capturar eventos fisiológicos significativos.
+
 # Referencias
 
 
