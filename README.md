@@ -87,24 +87,78 @@ disp(['ECG guardado en: ', outputFile]);
 clear d;
 ```
 
-En este código puede observarse una frecuencia de muestreo de 1Khz lo que indica que deben tomarse 1000 datos por segundo; y el tiempo que se tomó la señal fue de 300 segundos tiempo equivalente a 5 minutos; junto con este pequeño análisis se puede vdecir que se deber►1an tomar 30.000 datos de esta señal lo que fue confirmado conla revisión del archivo .csv que el MatLab creó.
+En este código puede observarse una frecuencia de muestreo de 1Khz lo que indica que deben tomarse 1000 datos por segundo; y el tiempo que se tomó la señal fue de 300 segundos tiempo equivalente a 5 minutos; junto con este pequeño análisis se puede vdecir que se deber►1an tomar 30.000 datos de esta señal lo que fue confirmado conla revisión del archivo .csv que el MatLab creó.A continuación puede descargarse el archivo:
 
 [Señal ECG. csv](https://github.com/Maria-Paula05/Laboratorio-numero-5-PDS/blob/main/emg_signal.csv)
 
+Adicional a esto, se calculó la frecuencia estimada del primer minuto con esta fracción de código,lo que indica que la frecuencia fue capturadade forma correcta:
+
+```python
+file_path = "ecg_signal.csv"
+df = pd.read_csv(file_path)
+tiempo = df.iloc[:, 0]  # Primera columna (Tiempo)
+voltaje = df.iloc[:, 1]  # Segunda columna (Voltaje)
+# Filtrar solo el primer minuto (tiempo <= 60 s)
+mask = tiempo <= 60
+tiempo_1min = tiempo[mask]
+voltaje_1min = voltaje[mask]
+fs_estimates = 1 / tiempo_1min.diff().dropna()
+fs_mean = fs_estimates.mean()
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo_1min, voltaje_1min, label="Señal ECG (Primer minuto)", color="b")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.title("Señal ECG (0-60 s)")
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+En esta imagen puede verse graficada la señal ECG del primer minuto y además de esto la frecuencia estimada:
+
+![image](https://github.com/user-attachments/assets/073c0c78-be1a-4182-b925-64153d27b214)
+
+Frecuencia de muestreo estimada (primer minuto): 990.19 Hz
 
 # 3.Pre-procesamiento de la señal:
+
+# a.Filtro IIR
+
+
+
+# b.Ecuación en diferencia del filtro
+
+
+
+# d. Identificación de picos R 
+
+# e. Calculo de intervalos R-R
+
+# f. Nueva señal con información anterior
+
+
+# c.Filtro de la señal aplicado a parametros inciales =0
+
+
+
 
 
 
 # 4.Análisis de la HRV en el dominio del tiempo:
 
+ # a. Media de intervalos R-R
+
+ # b. Desviación estandar 
 
 
 # 5.Aplicación de la Transformada Wavelet:
 
 
 
-
+¿Qué diferencias se observan entre los análisis en el dominio del tiempo y el 
+dominio tiempo-frecuencia?
+- ¿Qué efecto tiene el uso de diferentes funciones wavelet en los resultados del 
+análisis?
+- ¿Qué aplicaciones reales tiene esta práctica?
 # Referencias
 
 
