@@ -22,31 +22,27 @@ En la siguiente imagen se observa la variablidad de cada intervalo R-R en un ECG
 ![image](https://github.com/user-attachments/assets/df7ab97d-85d3-469b-80e2-d81e6b9d51f3)
 
 d.Frecuencias de interés en este análisis:
-
-
-
+En el análisis de la variabilidad de la frecuencia cardíaca (HRV) en el dominio de la frecuencia, se consideran principalmente tres bandas de interés. La banda de baja frecuencia (LF), que abarca de 0.04 a 0.15 Hz, está relacionada con una combinación de actividad simpática y parasimpática del sistema nervioso autónomo. La banda de alta frecuencia (HF), que va de 0.15 a 0.4 Hz, se asocia principalmente con la actividad parasimpática y está influenciada por la respiración. En algunos casos, también se incluye la banda de muy baja frecuencia (VLF), que va de 0.003 a 0.04 Hz, aunque su interpretación fisiológica es menos clara y su análisis requiere grabaciones más prolongadas. Estas bandas permiten evaluar la modulación autonómica del corazón a partir de las fluctuaciones en los intervalos R-R.
 e.Transformada Wavelet:
 
 
--Definición:La transformada wavelet es una herramienta matemática que descompone una señal en componentes de diferentes frecuencias y escalas, permitiendo analizar señales no estacionarias con alta resolución temporal y frecuencial.
+-Definición:La transformada wavelet es una herramienta matemática que permite descomponer una señal en componentes de diferentes escalas o resoluciones, utilizando funciones denominadas wavelets, que son ondas de corta duración con energía concentrada en el tiempo. A diferencia de la transformada de Fourier, que representa una señal en términos de senos y cosenos (infinitamente largos), la transformada wavelet ofrece una mejor resolución temporal y frecuencial simultáneamente, lo que la hace ideal para analizar señales no estacionarias como las biológicas.
 
 -Usos de transformada Wavelet:Se utiliza en el procesamiento de señales biológicas para:​
 
-Eliminar ruido y artefactos.​
+Detección de ondas R en señales ECG.
 
-Detectar eventos transitorios en señales como el electrocardiograma.​
+Eliminación de ruido o artefactos en señales como EMG o EEG.
 
-Analizar la variabilidad de la frecuencia cardíaca y otras señales fisiológicas .​
+Compresión de señales biológicas para almacenamiento eficiente.
 
-- Tipos de wavelet utilizadas en señales biológicas
-  
-Algunas wavelets comúnmente empleadas en el análisis de señales biológicas incluyen:​
+Análisis de variabilidad de frecuencia cardiaca (HRV).
 
-Daubechies: Adecuadas para detectar cambios abruptos en señales.​
+Caracterización de patrones en señales cerebrales o musculares.
 
-Coiflets: Ofrecen una buena resolución en tiempo y frecuencia.​
+-Tipos de wavelets utilizadas en señales biológicas
 
-Symlets: Similares a las Daubechies pero con mayor simetría, útiles en la reconstrucción de señales .​
+Entre los tipos de wavelets más utilizados en el análisis de señales biológicas se encuentran varias familias con propiedades distintas. Las Daubechies (dbN) son ampliamente empleadas en señales ECG debido a su buena localización temporal y su capacidad para detectar transitorios. Las Symlet (symN), una variante más simétrica de las Daubechies, son útiles cuando se requiere una mejor reconstrucción de la señal. Las Coiflet (coifN) ofrecen más momentos nulos, lo que permite un análisis más detallado de variaciones suaves. Las Biorthogonal (biorN.N) son empleadas especialmente en compresión y eliminación de ruido gracias a su simetría y capacidad de reconstrucción exacta. Además, algunas wavelets específicas se utilizan por su forma característica: la Morlet, una wavelet compleja con una onda senoidal modulada por una gaussiana, es útil para estudiar componentes oscilatorios como los ritmos cerebrales; la Haar, la más simple, funciona como una función escalón y es eficaz para detectar cambios abruptos; y la Mexican Hat o sombrero mexicano, derivada de una gaussiana, es excelente para detectar picos en señales como el ECG. La elección del tipo de wavelet depende del tipo de señal y del objetivo del análisis, ya sea detección, filtrado, compresión o estudio espectral.
 
 -Diagrama de flujo 
 
