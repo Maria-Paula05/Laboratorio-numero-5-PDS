@@ -1,4 +1,5 @@
-)# Laboratorio-numero-5-PDS
+# Laboratorio-numero-5-PDS
+
 # 1.Fundamento teórico:
 
 a.Actividad simpática del sistema nervioso autónomo:
@@ -15,17 +16,18 @@ c.Efecto de la actividad simpática y parasimpática en la frecuencia cardiaca:
 
 -Parasimpático: Disminuye la frecuencia cardíaca y la presión arterial, promoviendo un estado de relajación y recuperación .​
 
-c.Variabilidad de la frecuencia cardiaca (HRV) medida como fluctuaciones en el intervalo R-R:
+d.Variabilidad de la frecuencia cardiaca (HRV) medida como fluctuaciones en el intervalo R-R:
 
 La variabilidad de la frecuencia cardíaca (HRV) es el fenómeno fisiológico de variación en el intervalo de tiempo entre los latidos del corazón. Se mide por la variación en el intervalo latido a latido. HRV representa uno de los marcadores más prometedores del sistema nervioso autónomo (ANS) que se considera ampliamente como una de las mejores métricas objetivas para el estado físico y para determinar la preparación de su cuerpo para el rendimiento.La variabilidad de la frecuencia cardíaca no se refiere a los cambios en la frecuencia cardíaca por minuto en el electrocardiograma, sino que mide las variaciones entre un ciclo cardíaco y el ciclo cardíaco siguiente. Otros términos utilizados incluyen: "variabilidad de la duración del ciclo", "variabilidad R-R" (donde R es un punto que corresponde al pico del complejo QRS de la onda de ECG; y RR es el intervalo entre R sucesivas), y "variabilidad del período cardíaco".La variabilidad de la frecuencia cardíaca está determinada por el tiempo (ms) entre latidos cardíacos, conocido como intervalos R-R. Tenga en cuenta que el tiempo (ms) entre los intervalos R-R cambia continuamente. HRV son ritmos fisiológicos dentro de las oscilaciones del intervalo entre frecuencias cardíacas consecutivas e instantáneas.
 En la siguiente imagen se observa la variablidad de cada intervalo R-R en un ECG.
+
 ![image](https://github.com/user-attachments/assets/df7ab97d-85d3-469b-80e2-d81e6b9d51f3)
 
-d.Frecuencias de interés en este análisis:
+e.Frecuencias de interés en este análisis:
 
 En el análisis de la variabilidad de la frecuencia cardíaca (HRV) en el dominio de la frecuencia, se consideran principalmente tres bandas de interés. La banda de baja frecuencia (LF), que abarca de 0.04 a 0.15 Hz, está relacionada con una combinación de actividad simpática y parasimpática del sistema nervioso autónomo. La banda de alta frecuencia (HF), que va de 0.15 a 0.4 Hz, se asocia principalmente con la actividad parasimpática y está influenciada por la respiración. En algunos casos, también se incluye la banda de muy baja frecuencia (VLF), que va de 0.003 a 0.04 Hz, aunque su interpretación fisiológica es menos clara y su análisis requiere grabaciones más prolongadas. Estas bandas permiten evaluar la modulación autonómica del corazón a partir de las fluctuaciones en los intervalos R-R.
-e.Transformada Wavelet:
 
+f.Transformada Wavelet:
 
 -Definición:La transformada wavelet es una herramienta matemática que permite descomponer una señal en componentes de diferentes escalas o resoluciones, utilizando funciones denominadas wavelets, que son ondas de corta duración con energía concentrada en el tiempo. A diferencia de la transformada de Fourier, que representa una señal en términos de senos y cosenos (infinitamente largos), la transformada wavelet ofrece una mejor resolución temporal y frecuencial simultáneamente, lo que la hace ideal para analizar señales no estacionarias como las biológicas.
 
@@ -46,7 +48,6 @@ Caracterización de patrones en señales cerebrales o musculares.
 Entre los tipos de wavelets más utilizados en el análisis de señales biológicas se encuentran varias familias con propiedades distintas. Las Daubechies (dbN) son ampliamente empleadas en señales ECG debido a su buena localización temporal y su capacidad para detectar transitorios. Las Symlet (symN), una variante más simétrica de las Daubechies, son útiles cuando se requiere una mejor reconstrucción de la señal. Las Coiflet (coifN) ofrecen más momentos nulos, lo que permite un análisis más detallado de variaciones suaves. Las Biorthogonal (biorN.N) son empleadas especialmente en compresión y eliminación de ruido gracias a su simetría y capacidad de reconstrucción exacta. Además, algunas wavelets específicas se utilizan por su forma característica: la Morlet, una wavelet compleja con una onda senoidal modulada por una gaussiana, es útil para estudiar componentes oscilatorios como los ritmos cerebrales; la Haar, la más simple, funciona como una función escalón y es eficaz para detectar cambios abruptos; y la Mexican Hat o sombrero mexicano, derivada de una gaussiana, es excelente para detectar picos en señales como el ECG. La elección del tipo de wavelet depende del tipo de señal y del objetivo del análisis, ya sea detección, filtrado, compresión o estudio espectral.
 
 -Diagrama de flujo 
-
 
 ![image](https://github.com/user-attachments/assets/fce332eb-a546-4d40-b88d-96d4cea3838e)
 
@@ -120,7 +121,9 @@ Frecuencia de muestreo estimada (primer minuto): 990.19 Hz
 
 # 3.Pre-procesamiento de la señal:
 
-a.Filtro IIR
+a.Filtro IIR:
+
+En esra sección se separó el minuto  1 y 3 ya que el primero el sujeto de prueba se encontraba en reposo y en el 3 estaba sometido a estres y se quiere analizar cambio en frecuencia cardíaca:
 
 -Filtro de señal de primer minuto
 ````python
@@ -164,7 +167,8 @@ plt.show()
 `````
 ![image](https://github.com/user-attachments/assets/1f89b686-c55b-4319-8dcb-505276c84c51)
 
--Filtro de señal de tercer minuto 
+-Filtro de señal de tercer minuto:
+
 ```python
 fs_estimates = 1 / tiempo_3min.diff().dropna()
 fs_mean = fs_estimates.mean()
@@ -213,7 +217,8 @@ print(f"Frecuencia de muestreo estimada (tercer minuto): {fs_mean:.2f} Hz")
 ````
 ![image](https://github.com/user-attachments/assets/5b723233-545e-4e3e-90bb-b05ac633a5a6)
 
-d. Identificación de picos R 
+b. Identificación de picos R
+
 ```python
 min_dist = int(0.3 * fs)
 prominence = 0.3
@@ -276,7 +281,7 @@ Se detectaron 72 latidos en 60 segundos
 
 Frecuencia cardíaca total estimada: 72.00 latidos por minuto
 
-e. Nueva señal con información anterior
+c. Nueva señal con información anterior
 ```python
 rr_signal = np.zeros_like(tiempo_1min.values)
 for i in range(1, len(peaks)):
@@ -421,6 +426,7 @@ plt.show()
 ![image](https://github.com/user-attachments/assets/2c9bbf08-542a-4286-a5a8-58714fdea13c)
 
 # Análisis
+
 En este análisis se aplicó un filtro pasa banda IIR de tipo Butterworth de cuarto orden, con frecuencias de corte de 0.5 Hz y 40 Hz, sobre una señal ECG muestreada a 1000 Hz. El objetivo fue eliminar componentes no deseadas, como el ruido de muy baja frecuencia (por movimientos o artefactos respiratorios) y el ruido de alta frecuencia (como interferencia eléctrica o actividad muscular). En la señal original se observa un nivel de voltaje elevado con muchas variaciones pequeñas y rápidas, indicativas de ruido. Tras el filtrado, la señal se centra alrededor de cero voltios, y se reduce considerablemente el ruido, destacando más claramente los complejos QRS. Esta mejora en la claridad de la señal permite una detección más precisa de los picos R, fundamentales para el análisis de la frecuencia cardíaca y la variabilidad (HRV). En resumen, el filtrado fue exitoso, limpiando la señal y conservando sus características fisiológicas esenciales, lo cual es crucial para garantizar un análisis clínico y matemático fiable.
 
 En esta etapa del análisis se realizó la detección de los picos R de la señal ECG previamente filtrada, lo cual es esencial para calcular la frecuencia cardíaca y posteriormente analizar la variabilidad de la misma (HRV). Se utilizó la función find_peaks con dos parámetros clave: una distancia mínima entre picos (min_dist) de 0.3 segundos, que equivale al intervalo mínimo fisiológicamente esperable entre dos latidos (considerando una frecuencia cardíaca máxima de ~176 lpm), y una prominencia mínima de 0.3 V, con el fin de asegurar que los picos detectados correspondan a verdaderos complejos QRS y no a ruido o fluctuaciones menores. En el gráfico, los picos R se muestran resaltados en rojo sobre la señal ECG filtrada, evidenciando una detección clara y consistente a lo largo del minuto analizado. El resultado fue la identificación de un número de latidos que permitió estimar la frecuencia cardíaca total en latidos por minuto (bpm), reflejando la eficacia del preprocesamiento y del umbral seleccionado para capturar eventos fisiológicos significativos.
@@ -433,11 +439,20 @@ Por otro lado, la SDNN (desviación estándar de los intervalos R-R) fue de 0.24
 En conjunto, estos resultados muestran una variabilidad moderada, lo cual podría interpretarse como una respuesta fisiológica activa, posiblemente influida por la situación estresante (como se mencionó en el minuto 3 con el juego de terror). Esta variabilidad es esperada y normal en condiciones dinámicas, y refuerza el valor del análisis R-R como herramienta de evaluación del estado de activación o estrés del organismo.
 
 La imagen del espectrograma CWT de la HRV de nuestra señal muestra un episodio de activación del sistema nervioso autónomo en respuesta al estrés (Juego de Terror), evidenciado por un incremento de la potencia espectral entre los 100 y 150 segundos en un amplio rango de frecuencias (aproximadamente de 0.05 Hz a 0.35 Hz), abarcando tanto la banda LF (relacionada con la regulación simpática y parasimpática) como la HF (vinculada a la actividad parasimpática). Esta franja de alta intensidad, nos muestra que hay una fuerte respuesta autonómica transitoria, posiblemente debido al estímulo estresante. Fuera de ese intervalo, antes de los 100 segundos y después de los 150 segundos, la baja potencia espectral indica una actividad cardíaca más estable, que es lógica ya que fueron periodos de reposo y menos estres.
+# Preguntas
+
+-Diferencias entre análisis en el dominio del tiempo y el tiempo-frecuencia: El análisis en el dominio del tiempo ofrece una visión general de los intervalos R-R, mientras que el análisis tiempo-frecuencia, a través de la transformada wavelet, proporciona detalles sobre cómo las frecuencias de la HRV cambian a lo largo del tiempo, capturando mejor las variaciones dinámicas de la señal.
+
+-Efecto de las funciones wavelet: El tipo de wavelet seleccionada puede influir en la resolución del análisis. Las wavelets con mayor compresión temporal pueden ofrecer mejores resultados en frecuencias rápidas, mientras que otras pueden ser más adecuadas para fenómenos de baja frecuencia o cambios más suaves en la señal.
+
+-Aplicaciones reales: Esta práctica tiene aplicaciones en la medicina preventiva, monitorización de la salud cardiovascular, y la evaluación de la respuesta al estrés, lo cual es útil en el contexto de enfermedades crónicas y la gestión de la salud en general.
+
+# Conclusión
+
+El uso de filtros IIR es fundamental para eliminar ruidos de alta frecuencia en la señal ECG, lo que permite una detección precisa de los picos R, esenciales para el cálculo de los intervalos R-R y el análisis de la variabilidad de la frecuencia cardíaca (HRV). La adquisición adecuada de la señal mediante un sistema DAQ garantiza una señal precisa y confiable para análisis posteriores. Al aplicar la transformada wavelet, se logra un análisis detallado en el dominio tiempo-frecuencia, permitiendo observar cómo varían las frecuencias de la HRV, lo que proporciona una visión más profunda de la actividad simpática y parasimpática del sistema nervioso autónomo.
 
 # Referencias
 
-
-References
 Análisis de wavelets. (n.d.). StudySmarter ES. Retrieved April 26, 2025, from https://www.studysmarter.es/resumenes/matematicas/matematicas-aplicadas/analisis-de-wavelets/
 
 Coon, E. (2023, July 3). Introducción al sistema nervioso autónomo. Manuale Merck versión para el público general; Manuales de Merck. https://www.merckmanuals.com/es-us/hogar/enfermedades-cerebrales-medulares-y-nerviosas/trastornos-del-sistema-nervioso-autónomo/introducción-al-sistema-nervioso-autónomo
