@@ -120,9 +120,9 @@ Frecuencia de muestreo estimada (primer minuto): 990.19 Hz
 
 # 3.Pre-procesamiento de la señal:
 
-# a.Filtro IIR
+a.Filtro IIR
 
-
+-Filtro de señal de primer minuto
 ````python
 def butter_bandpass(lowcut, highcut, fs, order=4):
     nyq = 0.5 * fs
@@ -164,13 +164,58 @@ plt.show()
 `````
 ![image](https://github.com/user-attachments/assets/1f89b686-c55b-4319-8dcb-505276c84c51)
 
-# b.Ecuación en diferencia del filtro
-
-
-
-# d. Identificación de picos R 
+-Filtro de señal de tercer minuto 
 ```python
-min_dist = int(0.3 * fs)
+fs_estimates = 1 / tiempo_3min.diff().dropna()
+fs_mean = fs_estimates.mean()
+def butter_bandpass(lowcut, highcut, fs, order=4):
+    nyq = 0.5 * fs
+    Wn = [lowcut / nyq, highcut / nyq]
+    b, a = butter(order, Wn, btype='band')
+    return b, a
+
+def apply_filter_iir(data, b, a):
+    y = np.zeros_like(data)
+    for n in range(len(data)):
+        y[n] = b[0] * data[n]
+        for i in range(1, len(b)):
+            if n - i >= 0:
+                y[n] += b[i] * data[n-i]
+        for i in range(1, len(a)):
+            if n - i >= 0:
+                y[n] -= a[i] * y[n-i]
+    return y
+
+lowcut = 0.5  
+highcut = 40  
+
+b, a = butter_bandpass(lowcut, highcut, fs_mean)
+
+filtered_ecg_3min = apply_filter_iir(voltaje_3min.values, b, a)
+
+# Graficar la señal original y la filtrada
+plt.figure(figsize=(10, 6))
+plt.subplot(2, 1, 1)
+plt.plot(tiempo_3min, voltaje_3min, label='Señal Original (Tercer minuto)', color='b')
+plt.title('Señal ECG (120-180 s)')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Voltaje (V)')
+plt.grid(True)
+plt.subplot(2, 1, 2)
+plt.plot(tiempo_3min, filtered_ecg_3min, label='Señal Filtrada (IIR)', color='r')
+plt.title('Señal Filtrada del Tercer Minuto')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Voltaje (V)')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+print(f"Frecuencia de muestreo estimada (tercer minuto): {fs_mean:.2f} Hz")
+````
+![image](https://github.com/user-attachments/assets/5b723233-545e-4e3e-90bb-b05ac633a5a6)
+
+d. Identificación de picos R 
+```python
+min_dist = int(0.34 * fs)
 prominence = 0.3
 
 peaks, _ = find_peaks(filtered_ecg, distance=min_dist, prominence=prominence)
@@ -191,14 +236,47 @@ plt.grid()
 plt.legend()
 plt.show()
 ````
-![image](https://github.com/user-attachments/assets/1744a899-f0a6-4693-9454-b173103ddf32)
+![image](https://github.com/user-attachments/assets/75bba985-5978-40cf-b5f5-297e219a458d)
 
+Se detectaron 56 latidos en 60 segundos
+Frecuencia cardíaca total estimada: 56.00 latidos por minuto
 
-Se detectaron 64 latidos en 60 segundos
-Frecuencia cardíaca total estimada: 64.00 latidos por minuto
-# e. Calculo de intervalos R-R
+-Señal de tercer minuto
+```python
+# Detección de picos R con parámetros de distancia y prominencia ajustados
+min_dist = int(0.25 * fs_mean)  # Distancia mínima entre picos (0.2 segundos * frecuencia de muestreo)
+prominence = 0.1  # Prominencia mínima de los picos (más baja)
 
-# f. Nueva señal con información anterior
+# Detectar los picos R
+peaks, _ = find_peaks(filtered_ecg_3min, distance=min_dist, prominence=prominence)
+
+# Calcular la frecuencia cardíaca total
+n_latidos = len(peaks)  # Número de picos R detectados
+frecuencia_total = n_latidos / 1  # En 1 minuto
+
+# Imprimir resultados
+print(f"\n→ Se detectaron {n_latidos} latidos en 60 segundos")
+print(f"→ Frecuencia cardíaca total estimada: {frecuencia_total:.2f} latidos por minuto")
+
+# Graficar la señal ECG filtrada con los picos R detectados
+plt.figure(figsize=(12, 4))
+plt.plot(tiempo_3min, filtered_ecg_3min, label='ECG Filtrada')
+plt.plot(tiempo_3min.values[peaks], filtered_ecg_3min[peaks], "ro", label='Picos R')
+plt.title("Detección de Picos R en el Tercer Minuto")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.legend()
+plt.show()
+````
+
+![image](https://github.com/user-attachments/assets/7b0f5534-cc9d-400e-8c1d-a99915c6ee1e)
+
+Se detectaron 72 latidos en 60 segundos
+
+Frecuencia cardíaca total estimada: 72.00 latidos por minuto
+
+e. Nueva señal con información anterior
 ```python
 rr_signal = np.zeros_like(tiempo_1min.values)
 for i in range(1, len(peaks)):
@@ -221,7 +299,7 @@ plt.show()
 
 # 4.Análisis de la HRV en el dominio del tiempo:
 
- # Media de intervalos R-R y desviación estandar
+-Media de intervalos R-R y desviación estandar
  ```python
  rr_values = rr_signal[rr_signal > 0]
 
