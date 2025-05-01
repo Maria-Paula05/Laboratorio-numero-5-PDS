@@ -89,6 +89,7 @@ clear d;
 
 En este código puede observarse una frecuencia de muestreo de 1Khz lo que indica que deben tomarse 1000 datos por segundo; y el tiempo que se tomó la señal fue de 300 segundos tiempo equivalente a 5 minutos; junto con este pequeño análisis se puede vdecir que se deber►1an tomar 30.000 datos de esta señal lo que fue confirmado conla revisión del archivo .csv que el MatLab creó.
 
+https://github.com/Maria-Paula05/Laboratorio-numero-5-PDS/blob/main/emg_signal.csv
 
 
 # 3.Pre-procesamiento de la señal:
