@@ -22,6 +22,7 @@ En la siguiente imagen se observa la variablidad de cada intervalo R-R en un ECG
 ![image](https://github.com/user-attachments/assets/df7ab97d-85d3-469b-80e2-d81e6b9d51f3)
 
 d.Frecuencias de interés en este análisis:
+
 En el análisis de la variabilidad de la frecuencia cardíaca (HRV) en el dominio de la frecuencia, se consideran principalmente tres bandas de interés. La banda de baja frecuencia (LF), que abarca de 0.04 a 0.15 Hz, está relacionada con una combinación de actividad simpática y parasimpática del sistema nervioso autónomo. La banda de alta frecuencia (HF), que va de 0.15 a 0.4 Hz, se asocia principalmente con la actividad parasimpática y está influenciada por la respiración. En algunos casos, también se incluye la banda de muy baja frecuencia (VLF), que va de 0.003 a 0.04 Hz, aunque su interpretación fisiológica es menos clara y su análisis requiere grabaciones más prolongadas. Estas bandas permiten evaluar la modulación autonómica del corazón a partir de las fluctuaciones en los intervalos R-R.
 e.Transformada Wavelet:
 
@@ -87,9 +88,7 @@ disp(['ECG guardado en: ', outputFile]);
 clear d;
 ```
 
-En este código puede observarse una frecuencia de muestreo de 1Khz lo que indica que deben tomarse 1000 datos por segundo; y el tiempo que se tomó la señal fue de 300 segundos tiempo equivalente a 5 minutos; junto con este pequeño análisis se puede vdecir que se deber►1an tomar 30.000 datos de esta señal lo que fue confirmado conla revisión del archivo .csv que el MatLab creó.A continuación puede descargarse el archivo:
-
-[Señal ECG. csv](https://github.com/Maria-Paula05/Laboratorio-numero-5-PDS/blob/main/emg_signal.csv)
+En este código puede observarse una frecuencia de muestreo de 1Khz lo que indica que deben tomarse 1000 datos por segundo; y el tiempo que se tomó la señal fue de 300 segundos tiempo equivalente a 5 minutos; junto con este pequeño análisis se puede vdecir que se deber►1an tomar 30.000 datos de esta señal lo que fue confirmado conla revisión del archivo .csv que el MatLab creó.
 
 Adicional a esto, se calculó la frecuencia estimada del primer minuto con esta fracción de código,lo que indica que la frecuencia fue capturadade forma correcta:
 
@@ -123,19 +122,68 @@ Frecuencia de muestreo estimada (primer minuto): 990.19 Hz
 
 # a.Filtro IIR
 
+```python
+def butter_bandpass(lowcut, highcut, fs, order=4):
+    nyq = 0.5 * fs
+    Wn = [lowcut / nyq, highcut / nyq]
+    b, a = butter(order, Wn, btype='band')
+    return b, a
 
+def apply_filter(data, lowcut, highcut, fs):
+    b, a = butter_bandpass(lowcut, highcut, fs)
+    return lfilter(b, a, data)
+filtered_ecg = apply_filter(voltaje_1min.values, 0.5, 40, fs)
+```
 
 # b.Ecuación en diferencia del filtro
 
 
 
 # d. Identificación de picos R 
+```python
+min_dist = int(0.3 * fs)
+prominence = 0.3
+
+peaks, _ = find_peaks(filtered_ecg, distance=min_dist, prominence=prominence)
+
+# --- Calcular frecuencia cardíaca total ---
+n_latidos = len(peaks)
+frecuencia_total = n_latidos / 1  # en 1 minuto
+print(f"\n→ Se detectaron {n_latidos} latidos en 60 segundos")
+print(f"→ Frecuencia cardíaca total estimada: {frecuencia_total:.2f} latidos por minuto")
+# --- Gráfica: señal ECG con picos R ---
+plt.figure(figsize=(12, 4))
+plt.plot(tiempo_1min, filtered_ecg, label='ECG Filtrada')
+plt.plot(tiempo_1min.values[peaks], filtered_ecg[peaks], "ro", label='Picos R')
+plt.title("Detección de Picos R")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid()
+plt.legend()
+plt.show()
+````
 
 # e. Calculo de intervalos R-R
 
 # f. Nueva señal con información anterior
-
-
+```python
+rr_signal = np.zeros_like(tiempo_1min.values)
+for i in range(1, len(peaks)):
+    idx = peaks[i]
+    rr_signal[idx] = rr_intervals[i - 1]  # R-R anterior
+    fc_signal = np.zeros_like(tiempo_1min.values)
+for i in range(1, len(peaks)):
+    idx = peaks[i]
+    fc_signal[idx] = heart_rates[i - 1]  # FC instantánea
+    plt.figure(figsize=(12, 4))
+plt.plot(tiempo_1min, fc_signal, label="FC Instantánea como señal", color="purple")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Frecuencia cardíaca (bpm)")
+plt.title("Nueva señal con frecuencia cardíaca en posiciones R")
+plt.grid()
+plt.legend()
+plt.show()
+```
 # c.Filtro de la señal aplicado a parametros inciales =0
 
 
@@ -145,9 +193,26 @@ Frecuencia de muestreo estimada (primer minuto): 990.19 Hz
 
 # 4.Análisis de la HRV en el dominio del tiempo:
 
- # a. Media de intervalos R-R
+ # Media de intervalos R-R y desviación estandar
+ ```python
+ rr_values = rr_signal[rr_signal > 0]
 
- # b. Desviación estandar 
+mean_rr = np.mean(rr_values)
+sdnn = np.std(rr_values)
+
+print(f"Media de intervalos R-R: {mean_rr:.4f} s")
+print(f"SDNN (desviación estándar): {sdnn:.4f} s")
+
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo_1min, rr_signal, label="Señal de intervalos R-R")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("RR (s)")
+plt.title("Señal discreta de Intervalos R-R")
+plt.legend()
+plt.grid()
+plt.show()
+```
+
 
 
 # 5.Aplicación de la Transformada Wavelet:
