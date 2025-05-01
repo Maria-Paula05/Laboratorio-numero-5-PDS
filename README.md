@@ -249,7 +249,98 @@ SDNN (desviación estándar): 0.2491 s
 
 # 5.Aplicación de la Transformada Wavelet:
 
+```python
+data = np.loadtxt('rr_intervals.csv', delimiter=',', skiprows=1)
+rr_intervals = data[:, 1]  # Ajusta si los RR están en otra columna
 
+fs = 4
+
+# Generar vector de tiempo original a partir de los RR
+t_original = np.cumsum(rr_intervals)
+max_time = 300
+t_original_cut = t_original[t_original <= max_time]
+rr_intervals_cut = rr_intervals[:len(t_original_cut)]
+
+# Generar un vector de tiempo uniforme
+t_uniform = np.arange(0, max_time, 1/fs)
+
+# Interpolar para señal uniforme
+rr_interpolated = np.interp(t_uniform, t_original_cut, rr_intervals_cut)
+
+# ====== 3. Aplicar CWT ======
+wavelet = 'cmor1.5-1.0'  # Morlet compleja
+scales = np.arange(1, 128)
+coeffs, freqs = pywt.cwt(rr_interpolated, scales, wavelet, sampling_period=1/fs)
+power = np.abs(coeffs)**2  # Potencia
+
+# ====== 4. Graficar espectrograma ======
+plt.figure(figsize=(12, 6))
+plt.imshow(power, extent=[t_uniform[0], t_uniform[-1], freqs[-1], freqs[0]],
+           aspect='auto', cmap='jet')
+plt.colorbar(label='Potencia espectral')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Frecuencia (Hz)')
+plt.title('Espectrograma CWT de la HRV (Primeros 300 segundos)')
+plt.ylim([0.04, 0.4])  # LF y HF
+plt.grid(True)
+plt.show()
+```
+![image](https://github.com/user-attachments/assets/ed46e33e-21c1-4931-ab74-493b17cf96bd)
+
+```python
+data = np.loadtxt('rr_intervals.csv', delimiter=',', skiprows=1)
+rr_intervals = data[:, 1]
+fs = 4  # Frecuencia de muestreo deseada (Hz) para la señal interpolada
+
+# Generar vector de tiempo original a partir de los RR
+t_original = np.cumsum(rr_intervals)
+max_time = 300
+t_original_cut = t_original[t_original <= max_time]
+rr_intervals_cut = rr_intervals[:len(t_original_cut)]
+
+# Generar un vector de tiempo uniforme
+t_uniform = np.arange(0, max_time, 1/fs)
+
+# Interpolar para señal uniforme
+rr_interpolated = np.interp(t_uniform, t_original_cut, rr_intervals_cut)
+
+# ====== 3. Aplicar CWT ======
+wavelet = 'cmor1.5-1.0'  # Morlet compleja
+scales = np.arange(1, 128)
+coeffs, freqs = pywt.cwt(rr_interpolated, scales, wavelet, sampling_period=1/fs)
+power = np.abs(coeffs)**2  # Potencia
+
+# Índices de las frecuencias en el rango de LF y HF
+lf_band_indices = np.where((freqs >= 0.04) & (freqs <= 0.15))[0]
+hf_band_indices = np.where((freqs >= 0.15) & (freqs <= 0.4))[0]
+
+# ====== 5. Calcular la potencia total en las bandas LF y HF ======
+lf_power = np.sum(power[lf_band_indices, :], axis=0)  # Sumar la potencia en LF
+hf_power = np.sum(power[hf_band_indices, :], axis=0)  # Sumar la potencia en HF
+
+# ====== 7. Graficar los cambios de potencia en LF y HF ======
+plt.figure(figsize=(12, 6))
+
+# Graficar potencia LF
+plt.subplot(2, 1, 1)
+plt.plot(t_uniform, lf_power, label='Potencia LF (0.04-0.15 Hz)', color='blue')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Potencia (u.a.)')
+plt.title('Potencia en la Banda LF (0.04 - 0.15 Hz)')
+plt.grid(True)
+
+# Graficar potencia HF
+plt.subplot(2, 1, 2)
+plt.plot(t_uniform, hf_power, label='Potencia HF (0.15-0.4 Hz)', color='red')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Potencia (u.a.)')
+plt.title('Potencia en la Banda HF (0.15 - 0.4 Hz)')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+````
+![image](https://github.com/user-attachments/assets/2c9bbf08-542a-4286-a5a8-58714fdea13c)
 
 ¿Qué diferencias se observan entre los análisis en el dominio del tiempo y el 
 dominio tiempo-frecuencia?
