@@ -122,18 +122,47 @@ Frecuencia de muestreo estimada (primer minuto): 990.19 Hz
 
 # a.Filtro IIR
 
-```python
+
+````python
 def butter_bandpass(lowcut, highcut, fs, order=4):
     nyq = 0.5 * fs
     Wn = [lowcut / nyq, highcut / nyq]
     b, a = butter(order, Wn, btype='band')
     return b, a
 
+# Aplicar el filtro a los datos
 def apply_filter(data, lowcut, highcut, fs):
     b, a = butter_bandpass(lowcut, highcut, fs)
     return lfilter(b, a, data)
-filtered_ecg = apply_filter(voltaje_1min.values, 0.5, 40, fs)
-```
+
+# Parámetros
+fs = 1000  # Frecuencia de muestreo (en Hz), ajusta según tu señal
+lowcut = 0.5  # Frecuencia de corte baja
+highcut = 40  # Frecuencia de corte alta
+
+# Filtrar la señal ECG
+filtered_ecg = apply_filter(voltaje_1min.values, lowcut, highcut, fs)
+
+# Graficar la señal original y la filtrada
+plt.figure(figsize=(10, 6))
+plt.subplot(2, 1, 1)
+plt.plot(voltaje_1min.values, label='Señal Original')
+plt.title('Señal Original de ECG')
+plt.xlabel('Muestras')
+plt.ylabel('Voltaje')
+plt.grid(True)
+
+plt.subplot(2, 1, 2)
+plt.plot(filtered_ecg, label='Señal Filtrada', color='r')
+plt.title('Señal Filtrada con Filtro IIR')
+plt.xlabel('Muestras')
+plt.ylabel('Voltaje')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+`````
+![image](https://github.com/user-attachments/assets/1f89b686-c55b-4319-8dcb-505276c84c51)
 
 # b.Ecuación en diferencia del filtro
 
@@ -162,7 +191,11 @@ plt.grid()
 plt.legend()
 plt.show()
 ````
+![image](https://github.com/user-attachments/assets/1744a899-f0a6-4693-9454-b173103ddf32)
 
+
+Se detectaron 64 latidos en 60 segundos
+Frecuencia cardíaca total estimada: 64.00 latidos por minuto
 # e. Calculo de intervalos R-R
 
 # f. Nueva señal con información anterior
@@ -184,12 +217,7 @@ plt.grid()
 plt.legend()
 plt.show()
 ```
-# c.Filtro de la señal aplicado a parametros inciales =0
-
-
-
-
-
+![image](https://github.com/user-attachments/assets/4f471c16-618e-4d10-8b5d-834a6f5d21c0)
 
 # 4.Análisis de la HRV en el dominio del tiempo:
 
@@ -212,7 +240,11 @@ plt.legend()
 plt.grid()
 plt.show()
 ```
+![image](https://github.com/user-attachments/assets/c0d9b45a-89e9-4593-9336-2c990ec7308d)
 
+Media de intervalos R-R: 0.8923 s
+
+SDNN (desviación estándar): 0.2491 s
 
 
 # 5.Aplicación de la Transformada Wavelet:
